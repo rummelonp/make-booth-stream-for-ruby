@@ -1,4 +1,4 @@
-# make booth stream
+# Make::Booth Stream
 
 Make::Booth のストリームを Growl 表示
 
