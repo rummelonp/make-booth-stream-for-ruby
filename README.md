@@ -16,7 +16,7 @@ Make::Booth のストリームを Growl 表示
 
 ## インストール
 
-    git clone git://github.com/mitukiii/make-booth-stream
+    git clone git://github.com/mitukiii/make-booth-stream-for-ruby.git
     cd make-booth-stream
     bundle install
 
