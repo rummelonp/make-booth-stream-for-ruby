@@ -35,20 +35,21 @@ module MakeBooth
       $stdout.puts '  link: ' + HOST + data['image_file_link_path']
       $stdout.puts '  date: ' + date.strftime('%Y/%m/%d %H:%M')
 
-      options = {}
       if data['user_image_file_name']
         icon_name = data['user_image_file_name']
-        icon_path = File.join(ICON_DIR, icon_name)
-        unless File.exists? icon_path
-          image_uri = image_host + icon_name
-          open(icon_path, 'w') do |icon|
-            icon.print open(image_uri).read
-          end
+        image_uri = IMAGE_SMALL + icon_name
+      else
+        icon_name = 'default_icon.png'
+        image_uri = HOST + '/img/' + icon_name
+      end
+      icon_path = File.join(ICON_DIR, icon_name)
+      unless File.exists? icon_path
+        open(icon_path, 'w') do |icon|
+          icon.print open(image_uri).read
         end
-        options[:icon] = icon_path
       end
 
-      Growl.notify text, options
+      Growl.notify text, :icon => icon_path
     end
 
     def disconnect
