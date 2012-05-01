@@ -9,6 +9,7 @@ require 'open-uri'
 
 module MakeBooth
   ACTIVITY_URI = 'ws://ws.makebooth.com:5678/'
+  HOST         = 'http://makebooth.com'
   IMAGE_HOST   = 'http://img.makebooth.com'
   IMAGE_SMALL  = IMAGE_HOST + '/scale/c.50x50.'
 
@@ -26,9 +27,13 @@ module MakeBooth
 
     def stream(message)
       data = JSON.parse(message)
-      $stdout.puts data.inspect
 
       text = data['text'].gsub(/<\/?[^>]*>/, '')
+      date = DateTime.parse(data['created_at'])
+
+      $stdout.puts text
+      $stdout.puts '  link: ' + HOST + data['image_file_link_path']
+      $stdout.puts '  date: ' + date.strftime('%Y/%m/%d %H:%M')
 
       options = {}
       if data['user_image_file_name']
