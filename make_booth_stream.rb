@@ -54,7 +54,7 @@ module MakeBooth
 
     def disconnect
       $stderr.puts 'disconnect'
-      EventMachine.stop_event_roop
+      EventMachine.stop_event_loop
     end
   end
 end
