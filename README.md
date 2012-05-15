@@ -73,4 +73,5 @@ server のヘルプ
 
 ## コピーライト
 
-http://sam.zoy.org/wtfpl
+Released under the MIT license  
+[http://www.opensource.org/licenses/MIT](http://www.opensource.org/licenses/MIT)
