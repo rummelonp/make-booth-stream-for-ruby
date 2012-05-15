@@ -1,38 +1,47 @@
 # -*- coding: utf-8 -*-
 
 module MakeBooth
-  HOST = 'localhost'
-  PORT = 5678
-
-  DATA_DIR = File.join(File.dirname(__FILE__), '..', '..', 'data')
-
   module Server
+    HOST     = 'localhost'
+    PORT     = 5678
+    INTERVAL = 10
+
+    @connections = []
+    @data = JSON.load(open(DATA_PATH)) rescue []
+
     module_function
 
-    def start
-      EventMachine::WebSocket.start(:host => HOST, :port => PORT) do |server|
-        server.onopen    &method(:onopen)
-        server.onmessage &method(:onmessage)
-        server.onclose   &method(:onclose)
+    def start(options = {})
+      interval = options.fetch :interval, INTERVAL
 
-        data_path = File.join(DATA_DIR, 'data.json')
-        data = JSON.parse(open(data_path).read) rescue []
-        EventMachine.add_periodic_timer(1) do
-          server.send data.shuffle.first.to_json
+      EventMachine.run do
+        EventMachine::WebSocket.start(:host => HOST, :port => PORT) do |con|
+          con.onopen do
+            $stdout.puts "MakeBooth#Server: connection opened #{con}"
+
+            @connections.push(con) unless @connections.include?(con)
+          end
+
+          con.onclose do
+            $stderr.puts "MakeBooth#Server: connection closed #{con}"
+
+            @connections.delete(con)
+          end
         end
+
+        EventMachine.add_periodic_timer(interval) do
+          $stdout.puts "MakeBooth#Server: send data to #{@connections.size} connections"
+
+          datum = @data.shift
+          @data << datum
+
+          @connections.each do |con|
+            con.send(datum.to_json)
+          end
+        end
+
+        $stdout.puts "MakeBooth#Server: start web socket server on ws://#{HOST}:#{PORT}"
       end
-    end
-
-    def onopen
-      $stderr.puts 'open'
-    end
-
-    def onmessage(message)
-      $stderr.puts "message: #{message}"
-    end
-
-    def onclose
-      $stderr.puts "onclose"
     end
   end
 end
