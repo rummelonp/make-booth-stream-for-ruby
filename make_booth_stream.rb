@@ -13,6 +13,7 @@ module MakeBooth
   IMAGE_HOST   = 'http://img.makebooth.com'
   IMAGE_SMALL  = IMAGE_HOST + '/scale/c.50x50.'
 
+  DATA_DIR     = File.join(File.dirname(__FILE__), 'data')
   ICON_DIR     = File.join(File.dirname(__FILE__), 'icon')
 
   module Stream
@@ -26,17 +27,22 @@ module MakeBooth
     end
 
     def stream(message)
-      data = JSON.parse(message)
+      datum = JSON.parse(message)
 
-      text = data['text'].gsub(/<\/?[^>]*>/, '')
-      date = DateTime.parse(data['created_at'])
+      data_path = File.join(DATA_DIR, 'data.json')
+      data = JSON.parse(open(data_path).read) rescue []
+      data << datum
+      open(data_path, 'w') { |f| f.puts JSON.pretty_generate(data) }
+
+      text = datum['text'].gsub(/<\/?[^>]*>/, '')
+      date = DateTime.parse(datum['created_at'])
 
       $stdout.puts text
-      $stdout.puts '  link: ' + HOST + data['image_file_link_path']
+      $stdout.puts '  link: ' + HOST + datum['image_file_link_path']
       $stdout.puts '  date: ' + date.strftime('%Y/%m/%d %H:%M')
 
-      if data['user_image_file_name']
-        icon_name = data['user_image_file_name']
+      if datum['user_image_file_name']
+        icon_name = datum['user_image_file_name']
         image_uri = IMAGE_SMALL + icon_name
       else
         icon_name = 'default_icon.png'
