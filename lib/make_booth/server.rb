@@ -1,16 +1,10 @@
-#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-
-require 'rubygems'
-require 'bundler'
-Bundler.require
-require 'json' unless defined? JSON
 
 module MakeBooth
   HOST = 'localhost'
   PORT = 5678
 
-  DATA_DIR = File.join(File.dirname(__FILE__), 'data')
+  DATA_DIR = File.join(File.dirname(__FILE__), '..', '..', 'data')
 
   module Server
     module_function
@@ -42,5 +36,3 @@ module MakeBooth
     end
   end
 end
-
-MakeBooth::Server.start

@@ -1,10 +1,5 @@
-#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
-require 'rubygems'
-require 'bundler'
-Bundler.require
-require 'json' unless defined? JSON
 require 'open-uri'
 
 module MakeBooth
@@ -13,8 +8,8 @@ module MakeBooth
   IMAGE_HOST   = 'http://img.makebooth.com'
   IMAGE_SMALL  = IMAGE_HOST + '/scale/c.50x50.'
 
-  DATA_DIR     = File.join(File.dirname(__FILE__), 'data')
-  ICON_DIR     = File.join(File.dirname(__FILE__), 'icon')
+  DATA_DIR     = File.join(File.dirname(__FILE__), '..', '..', 'data')
+  ICON_DIR     = File.join(File.dirname(__FILE__), '..', '..', 'icon')
 
   module Stream
     module_function
@@ -64,5 +59,3 @@ module MakeBooth
     end
   end
 end
-
-MakeBooth::Stream.connect
